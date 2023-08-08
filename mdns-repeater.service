@@ -1,0 +1,16 @@
+[Unit]
+Description=Multicast DNS repeater daemon
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/default/mdns-repeater
+Type=forking
+ExecStart=/usr/bin/mdns-repeater -p /run/mdns-repeater/mdns-repeater.pid -u mdns-repeater $FLAGS
+PIDFile=/run/mdns-repeater/mdns-repeater.pid
+PrivateDevices=yes
+KillMode=process
+KillSignal=SIGTERM
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

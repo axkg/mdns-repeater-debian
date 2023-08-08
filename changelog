@@ -1,0 +1,9 @@
+mdns-repeater (1.11+git974ab38-1) UNRELEASED; urgency=medium
+
+  * Initial package version
+
+ -- Alexander Koenig <alex@lisas.de>  Tue, 08 Aug 2023 10:19:06 +0200
+
+Local variables:
+mode: debian-changelog
+End:

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "purge" ] ; then
+    if getent passwd mdns-repeater >/dev/null; then
+        if which deluser >/dev/null 2>&1; then
+            deluser --quiet --system mdns-repeater || echo "Could not remove mdns-repeater user."
+        fi
+    fi
+    # Get rid of leftover logs
+    rm -rf /var/log/mdns-repeater
+fi
+
+#DEBHELPER#

@@ -1,0 +1,5 @@
+### mdns-repeater defaults
+
+# Configure at least two interfaces to repeat for
+
+FLAGS="lan wlan"

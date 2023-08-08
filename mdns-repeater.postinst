@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+# Create a mdns-repeater system group
+if ! getent group mdns-repeater > /dev/null; then
+    addgroup --quiet --system mdns-repeater
+fi
+
+# Create a mdns-repeater system user
+if ! getent passwd mdns-repeater > /dev/null; then
+    adduser --quiet --system \
+        --ingroup mdns-repeater \
+        --home /run/mdns-repeater \
+        --disabled-password --shell /bin/false \
+        mdns-repeater
+    usermod -c "Tinyproxy daemon" mdns-repeater
+fi
+
+#DEBHELPER#

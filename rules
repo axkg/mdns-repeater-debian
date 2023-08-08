@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+include /usr/share/dpkg/architecture.mk
+
+%:
+	dh $@
+
+override_dh_auto_install:
+	dh_auto_install
+	mkdir -p $(CURDIR)/debian/tmp/usr/bin/
+	cp -a $(CURDIR)/mdns-repeater $(CURDIR)/debian/tmp/usr/bin/
+	mkdir -p $(CURDIR)/debian/tmp/usr/share/doc/mdns-repeater/
+	cp -a $(CURDIR)/README.txt $(CURDIR)/debian/tmp/usr/share/doc/mdns-repeater/

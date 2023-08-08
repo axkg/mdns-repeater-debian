@@ -1,0 +1,88 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          mdns-repeater
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Multicast DNS repeater
+# Description:       Start, stop or reload mdns-repeater.
+### END INIT INFO
+#
+# Tinyproxy init.d script
+# Ed Boraas 1999
+#
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+CONFIG=/etc/mdns-repeater/mdns-repeater.conf
+DAEMON=/usr/bin/mdns-repeater
+DESC="Multicast DNS repeater daemon"
+FLAGS=
+NAME=mdns-repeater
+
+if [ -r /etc/default/mdns-repeater ]; then
+	. /etc/default/mdns-repeater
+fi
+
+FLAGS="$FLAGS -c $CONFIG"
+
+test -f $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+
+set -e
+
+# assert pidfile directory and permissions
+if [ "$1" != "stop" ]; then
+	if [ -f "$CONFIG" ]; then
+		USER=$(grep    -i '^User[[:space:]]'    "$CONFIG" | awk '{print $2}')
+		GROUP=$(grep   -i '^Group[[:space:]]'   "$CONFIG" | awk '{print $2}')
+		PIDFILE=$(grep -i '^PidFile[[:space:]]' "$CONFIG" | awk '{print $2}' |\
+		    sed -e 's/"//g')
+		if [ -n "$PIDFILE" ];then
+			PIDDIR=$(dirname "$PIDFILE")
+		fi
+		if [ -n "$PIDDIR" -a "$PIDDIR" != "/run" ]; then
+			if [ ! -d "$PIDDIR" ]; then
+				mkdir "$PIDDIR"
+			fi
+			if [ -n "$USER" ]; then
+				chown "$USER" "$PIDDIR"
+			fi
+			if [ -n "$GROUP" ]; then
+				chown ":$GROUP" "$PIDDIR"
+			fi
+		fi
+	fi
+fi
+
+case "$1" in
+	start)
+		echo -n "Starting $DESC: "
+		start-stop-daemon --start --quiet -o --exec $DAEMON -- $FLAGS
+		echo "$NAME."
+	;;
+	stop)
+		echo -n "Stopping $DESC: "
+		start-stop-daemon --stop --quiet -o --exec $DAEMON
+		echo "$NAME."
+	;;
+	reload|force-reload)
+		echo "Reloading $NAME configuration files."
+		start-stop-daemon --stop --signal 1 --quiet -o --exec $DAEMON
+	;;
+	restart)
+		echo -n "Restarting $DESC: "
+		start-stop-daemon --stop --quiet -o --exec $DAEMON
+		sleep 1
+		start-stop-daemon --start --quiet -o --exec $DAEMON -- $FLAGS
+		echo "$NAME."
+	;;
+	*)
+		N=/etc/init.d/$NAME
+		echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
+		exit 1
+	;;
+esac
+
+exit 0

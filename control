@@ -1,0 +1,24 @@
+Source: mdns-repeater
+Section: net
+Priority: optional
+Maintainer: Alexander Koenig <alex@lisas.de>
+Rules-Requires-Root: no
+Standards-Version: 4.6.0
+Build-Depends: debhelper-compat (= 13),
+               asciidoc,
+               xmlto
+Vcs-Git: https://github.com/axkg/mdns-repeater-debian
+Vcs-Browser: https://github.com/axkg/mdns-repeater-debian
+Homepage: https://github.com/geekman/mdns-repeater
+
+Package: mdns-repeater
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends},
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         adduser,
+         lsb-base (>= 3.0-6),
+Description: mdns-repeater is a Multicast DNS repeater for Linux. Multicast DNS
+ uses the 224.0.0.251 address, which is "administratively scoped" and does not 
+ leave the subnet.
+ This program re-broadcast mDNS packets from one interface to other interfaces.
